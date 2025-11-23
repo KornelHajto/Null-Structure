@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3 uid="uid://bg7sa2fp0pyoh"]
+
+[ext_resource type="Script" uid="uid://c3rjw3fjhf71n" path="res://Scripts/PlayerController.cs" id="1_kyqiw"]
+[ext_resource type="Shader" uid="uid://cq3fv3ewfgfj5" path="res://Scenes/post_process_outline.gdshader" id="2_dewec"]
+[ext_resource type="Script" uid="uid://bpbklkfnek308" path="res://Scripts/WeaponSway.cs" id="2_gntrk"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0rwas"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kyqiw"]
+render_priority = 0
+shader = ExtResource("2_dewec")
+shader_parameter/outline_thickness = 2.0
+shader_parameter/sensitivity = 50.0
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_kyqiw"]
+material = SubResource("ShaderMaterial_kyqiw")
+size = Vector2(2, 2)
+center_offset = Vector3(0, 0, -0.1)
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Head", "Camera")]
+script = ExtResource("1_kyqiw")
+Head = NodePath("Head")
+Camera = NodePath("Head/Camera3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_0rwas")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+fov = 90.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head/Camera3D"]
+mesh = SubResource("QuadMesh_kyqiw")
+
+[node name="WeaponHolder" type="Node3D" parent="Head" node_paths=PackedStringArray("Player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, -0.25, -0.4)
+script = ExtResource("2_gntrk")
+Player = NodePath("../..")
